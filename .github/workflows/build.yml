@@ -31,20 +31,9 @@ jobs:
       env:
         NIX_FIRST_BUILD_UID: 400
 
-    - uses: cachix/cachix-action@v15
-      if: github.ref == 'refs/heads/main'
-      with:
-        name: codex-cli
-        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-
     - name: Build ${{ matrix.variant }}
       run: |
         nix build .#${{ matrix.variant }}
-
-    - name: Push to Cachix
-      if: github.ref == 'refs/heads/main'
-      run: |
-        nix build .#${{ matrix.variant }} --json | jq -r '.[].outputs.out' | cachix push codex-cli
 
     - name: Test ${{ matrix.variant }}
       run: |
