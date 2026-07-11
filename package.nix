@@ -42,6 +42,16 @@ let
     "aarch64-unknown-linux-musl" = "1f5mm1flbsjv62iqix3z8nd2kvp34d16lxfkpd6ysv74k1gyzy5r";
   };
 
+  # codex >= 0.143 spawns a separate `codex-code-mode-host` binary (found
+  # next to the running executable) when "code mode" is enabled. Shipped as its
+  # own release asset, so the native build must fetch and install it too.
+  codeModeHostHashes = {
+    "aarch64-apple-darwin" = "15181psvm7w24kiymnjn0im6h0xbh9hz48a7shyr3pplvk5a3b80";
+    "x86_64-apple-darwin" = "15zxzfm180jryl76y9976np0865wmxjvqg2rbn7n81l40mlh5zlc";
+    "x86_64-unknown-linux-musl" = "0pyj7lw3i0amgmfacngn0m7gcxbnsah7h74k82alda0npvqdv6hq";
+    "aarch64-unknown-linux-musl" = "1rsqq0scrkc9dsfbxlffyhvisykfqkiryhb3finc6idaz56n24h6";
+  };
+
   nodeOptionalDepHashes = {
     "darwin-arm64" = "061frx0hmszjka6wq2w75bw29f6zc82bpnniipavlrhg2y2mcnin";
     "darwin-x64" = "1q1jc5za9wi66xlji97zabcfd098q4fbhxx3b5apkgil334hirq3";
@@ -55,6 +65,13 @@ let
     fetchurl {
       url = nativeBinaryUrl;
       sha256 = nativeHashes.${platform};
+    }
+  else null;
+
+  codeModeHost = if runtime == "native" && platform != null then
+    fetchurl {
+      url = "https://github.com/openai/codex/releases/download/rust-v${version}/codex-code-mode-host-${platform}.tar.gz";
+      sha256 = codeModeHostHashes.${platform};
     }
   else null;
 
@@ -112,6 +129,10 @@ stdenv.mkDerivation rec {
     mv build/codex-${platform} build/codex
     chmod u+w,+x build/codex
 
+    tar -xzf ${codeModeHost} -C build
+    mv build/codex-code-mode-host-${platform} build/codex-code-mode-host
+    chmod u+w,+x build/codex-code-mode-host
+
     runHook postBuild
   '' else ''
     runHook preBuild
@@ -139,6 +160,8 @@ stdenv.mkDerivation rec {
 
     cp build/codex $out/bin/codex-raw
     chmod +x $out/bin/codex-raw
+    cp build/codex-code-mode-host $out/bin/codex-code-mode-host
+    chmod +x $out/bin/codex-code-mode-host
     makeWrapper "$out/bin/codex-raw" "$out/bin/${selected.binName}" \
       --run 'export CODEX_EXECUTABLE_PATH="$HOME/.local/bin/${selected.binName}"' \
       --set DISABLE_AUTOUPDATER 1 \

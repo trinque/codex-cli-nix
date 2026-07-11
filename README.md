@@ -148,7 +148,7 @@ Add to your Home Manager configuration:
 Two package variants are available:
 
 **`codex` (default, native binary)**
-- Pre-built Rust binary from OpenAI's GitHub releases
+- Pre-built Rust CLI and required companion executable from OpenAI's GitHub releases
 - Self-contained, no runtime dependencies
 - Fastest startup time
 - Supported platforms: `x86_64-linux`, `aarch64-linux`, `x86_64-darwin`, `aarch64-darwin`
@@ -190,7 +190,7 @@ nix develop
 This repository uses GitHub Actions to automatically check for new Codex versions hourly. When a new version is detected:
 
 1. A pull request is automatically created with the version update
-2. The tarball hash is automatically calculated
+2. Required release artifact hashes are automatically refreshed
 3. Tests run on both Linux and macOS to verify the build
 4. The PR auto-merges if all checks pass
 

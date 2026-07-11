@@ -47,6 +47,7 @@ jobs:
       - name: Verify package contents
         run: |
           test -f ./result/bin/codex
+          test -x ./result/bin/codex-code-mode-host
 
       - name: Run basic functionality test
         run: |
