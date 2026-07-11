@@ -269,4 +269,5 @@ Contributions are welcome! Please submit pull requests or issues on GitHub.
 ## Related Projects
 
 - [claude-code-nix](https://github.com/sadjow/claude-code-nix) - Similar packaging for Anthropic's Claude Code
+- [Awesome Codex CLI](https://github.com/RoggeOhta/awesome-codex-cli) - Third-party Codex ecosystem directory listing this project
 - [nixpkgs](https://github.com/NixOS/nixpkgs) - The Nix Packages collection
