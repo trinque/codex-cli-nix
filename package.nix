@@ -5,6 +5,7 @@
 , cacert
 , makeWrapper
 , installShellFiles
+, installShellCompletions ? stdenv.buildPlatform.canExecute stdenv.hostPlatform
 , gnutar
 , gzip
 , openssl
@@ -107,6 +108,10 @@ let
 
   selected = runtimeConfig.${runtime};
   linuxRuntimePath = lib.makeBinPath (lib.optionals stdenv.isLinux [ bubblewrap ]);
+  generateShellCompletions =
+    installShellCompletions
+    && runtime == "native"
+    && selected.binName == "codex";
 in
 assert runtime == "native" -> platform != null ||
   throw "Native runtime not supported on ${stdenv.hostPlatform.system}. Supported: aarch64-darwin, x86_64-darwin, x86_64-linux, aarch64-linux";
@@ -121,7 +126,7 @@ stdenv.mkDerivation rec {
   dontStrip = runtime == "native";
 
   nativeBuildInputs = selected.nativeBuildInputs
-    ++ lib.optionals (selected.binName == "codex") [ installShellFiles ];
+    ++ lib.optionals generateShellCompletions [ installShellFiles ];
   buildInputs = selected.buildInputs;
 
   buildPhase = if runtime == "native" then ''
@@ -183,7 +188,7 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  postInstall = lib.optionalString (selected.binName == "codex") ''
+  postInstall = lib.optionalString generateShellCompletions ''
     installShellCompletion --cmd codex \
       --bash <("$out/bin/${selected.binName}" completion bash) \
       --fish <("$out/bin/${selected.binName}" completion fish) \

@@ -162,6 +162,7 @@ Two package variants are available:
 
 - **Native Rust Binary**: Self-contained binary with no runtime dependencies (default)
 - **Node.js Alternative**: Optional Node.js runtime for compatibility
+- **Shell Completions**: Bash, Fish, and Zsh completions included with the default native package
 - **Version Pinning**: Ensures consistent behavior across different environments
 - **Auto-update Protection**: Prevents unexpected updates that might break your workflow
 - **Cross-platform Support**: Pre-built binaries for Linux and macOS (x86_64 and ARM64)
