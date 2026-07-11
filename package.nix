@@ -43,13 +43,13 @@ let
   };
 
   # codex >= 0.143 spawns a separate `codex-code-mode-host` binary (found
-  # next to the main executable) when "code mode" is enabled. Shipped as its
+  # next to the running executable) when "code mode" is enabled. Shipped as its
   # own release asset, so the native build must fetch and install it too.
   codeModeHostHashes = {
-    "aarch64-apple-darwin" = "0im248hb4vb7wd0k4fkg87chszsac022ijy7d49m9zmy60j2iybc";
-    "x86_64-apple-darwin" = "07rdypzbqvmq9z6mx6q61jf00n4f6xyp3nj7s2f0vy9pjwfv5lkg";
-    "x86_64-unknown-linux-musl" = "0gcr30mf1mgfwqfpiqhmvjb0qyq23vwgfgjii7s2nz4lb9fcdn96";
-    "aarch64-unknown-linux-musl" = "0sniqrhxcff3rghai6nsx59fm5zil4i56hk7wiqkmhhsysamdcia";
+    "aarch64-apple-darwin" = "15181psvm7w24kiymnjn0im6h0xbh9hz48a7shyr3pplvk5a3b80";
+    "x86_64-apple-darwin" = "15zxzfm180jryl76y9976np0865wmxjvqg2rbn7n81l40mlh5zlc";
+    "x86_64-unknown-linux-musl" = "0pyj7lw3i0amgmfacngn0m7gcxbnsah7h74k82alda0npvqdv6hq";
+    "aarch64-unknown-linux-musl" = "1rsqq0scrkc9dsfbxlffyhvisykfqkiryhb3finc6idaz56n24h6";
   };
 
   nodeOptionalDepHashes = {
