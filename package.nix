@@ -4,6 +4,8 @@
 , nodejs_22
 , cacert
 , makeWrapper
+, installShellFiles
+, installShellCompletions ? stdenv.buildPlatform.canExecute stdenv.hostPlatform
 , gnutar
 , gzip
 , openssl
@@ -106,6 +108,10 @@ let
 
   selected = runtimeConfig.${runtime};
   linuxRuntimePath = lib.makeBinPath (lib.optionals stdenv.isLinux [ bubblewrap ]);
+  generateShellCompletions =
+    installShellCompletions
+    && runtime == "native"
+    && selected.binName == "codex";
 in
 assert runtime == "native" -> platform != null ||
   throw "Native runtime not supported on ${stdenv.hostPlatform.system}. Supported: aarch64-darwin, x86_64-darwin, x86_64-linux, aarch64-linux";
@@ -119,7 +125,8 @@ stdenv.mkDerivation rec {
   dontPatchELF = runtime == "native";
   dontStrip = runtime == "native";
 
-  nativeBuildInputs = selected.nativeBuildInputs;
+  nativeBuildInputs = selected.nativeBuildInputs
+    ++ lib.optionals generateShellCompletions [ installShellFiles ];
   buildInputs = selected.buildInputs;
 
   buildPhase = if runtime == "native" then ''
@@ -179,6 +186,13 @@ stdenv.mkDerivation rec {
       --set DISABLE_AUTOUPDATER 1 \
       ${lib.optionalString stdenv.isLinux ''--prefix PATH : "${linuxRuntimePath}"''}
     runHook postInstall
+  '';
+
+  postInstall = lib.optionalString generateShellCompletions ''
+    installShellCompletion --cmd codex \
+      --bash <("$out/bin/${selected.binName}" completion bash) \
+      --fish <("$out/bin/${selected.binName}" completion fish) \
+      --zsh <("$out/bin/${selected.binName}" completion zsh)
   '';
 
   meta = with lib; {
