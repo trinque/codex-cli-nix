@@ -207,10 +207,14 @@ For manual updates:
    ```bash
    ./scripts/update.sh --check
    ```
-2. Update to latest version:
+2. Update to the latest version:
    ```bash
-   # Get the latest version number from the check above
-   ./scripts/update.sh 0.30.0  # Replace with actual version
+   ./scripts/update.sh
+   ```
+
+   Or update to a specific version:
+   ```bash
+   ./scripts/update.sh --version 0.144.3  # Replace with the desired version
    ```
 3. Test the build:
    ```bash
